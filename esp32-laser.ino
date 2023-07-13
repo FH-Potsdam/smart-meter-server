@@ -12,6 +12,7 @@
 
 float threshold = 2.0;
 float price = 10.0/60.0; // price per minute
+float exPrice = 0.5; // external price per minute
 
 RTC_DS3231 rtc;
 AESLib aesLib;
@@ -414,6 +415,7 @@ void loop() {
               String fMatr = getParam(header, "matr");
               String fEmail = getParam(header, "email");
               String fIsseminar = getParam(header, "seminar");
+              String fIsfb = getParam(header, "fb");
               String fLecturer = getParam(header, "lecturer");
               String fSeminar = getParam(header, "title");
 
@@ -486,7 +488,11 @@ void loop() {
               client.println(String(sum));
               client.println(" Minuten</p>");
               client.println("<label>Kosten:</label><p class='big'>");
-              float cost = sum * price;
+              float tPrice = price;
+              if (fIsfb != "4") {
+                tPrice = exPrice;
+              }
+              float cost = sum * tPrice;
               client.println(String(cost, 2));
               client.println(" €</p>");
               client.println("<label>Referenznr.:</label><p class='big'>");
@@ -495,7 +501,7 @@ void loop() {
               client.println("</p>");
               client.println("<br />");
               
-              if (fIsseminar == "ja") {
+              if (fIsseminar == "ja" && fIsfb == "4") {
                 client.println("<p>Die im Rahmen deiner Kursarbeit entstandenen Kosten werden automatisch vom Konto von <b>");
                 client.println(fLecturer);
                 client.println("</b> abezogen.</p>");
@@ -585,6 +591,7 @@ void loop() {
               client.println("<label>Matrikelnummer:</label><div><input type='text' name='matr' required/></div>");
               client.println("<label>Email:</label><div><input type='text' name='email' required/></div>");
               client.println("<label class='hl'>Laserauftrag</label>");
+              client.println("<label>An welchem Fachbereich studierst du?</label><div><select name='fb'><option value='4' selected>FB4 - Design</option><option value='other'>Anderer FB</option></select></div>");
               client.println("<label>Ist die Arbeit im Rahmen eines Kurses entstanden?</label><div><select name='seminar'><option value='nein' selected>Nein</option><option value='ja'>Ja</option></select></div>");
               client.println("<p style='margin-top:10px;'><i>Falls es eine Kursarbeit ist:</i></p>");
               client.println("<label>Name des Lehrenden:</label><div><input type='text' name='lecturer' /></div>");
