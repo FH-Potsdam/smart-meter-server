@@ -360,7 +360,7 @@ void loop() {
             } else if (header.indexOf("GET /getusage") >= 0) {
               String uSecret = getParam(header, "password");
               if (uSecret == secret) {
-                client.println("<table><thead><tr><th>Name</th><th>Matr.</th><th>EMail</th><th>Ref.</th><th>Zeit</th><th>Kosten</th><th>Datum</th><th>Start</th><th>Ende</th><th>IsSeminar</th><th>Prof.</th><th>Seminar</th></tr></thead><tbody>");
+                client.println("<table><thead><tr><th>Name</th><th>Matr.</th><th>EMail</th><th>Ref.</th><th>Zeit</th><th>Kosten</th><th>Datum</th><th>Start</th><th>Ende</th><th>IsSeminar</th><th>Prof.</th><th>Seminar</th><th>IsFB4</th></tr></thead><tbody>");
                 File file = SD.open("/usage", FILE_READ);
                 if(!file){
                   Serial.println("Failed to open file for reading");
@@ -544,6 +544,8 @@ void loop() {
                 readBuffer += fLecturer;
                 readBuffer += "~";
                 readBuffer += fSeminar;
+                readBuffer += "~";
+                readBuffer += fIsfb;
                 
                 sprintf(cleartext, "%s", readBuffer.c_str());
                 String encrypted = encrypt_impl(cleartext, enc_iv);
